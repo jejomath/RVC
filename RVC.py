@@ -113,6 +113,11 @@ class randomVoronoiCells:
         normalizer = [1/self.centroid_populations[i] for i in range(self.centroids.shape[0])]
         self.centroids = scipy.diag(normalizer).dot(self.centroids)
 
+        for i in range(self.centroids.shape[0]):
+            if self.centroid_populations[i] <= self.reset_threshold:
+                self.centroids[i,:] = self.data[self.random_seed(self.seed_labels[i]),:]
+
+
     def record_centroids(self):
         self.saved_centroids.append(self.centroids)
         self.saved_centroid_ratios.append(self.ratios)
