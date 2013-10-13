@@ -4,10 +4,11 @@ from operator import itemgetter
 
 class randomVoronoiCells:
     
-    def __init__(self, reset_threshold=0, centroid_sharing=1):
+    def __init__(self, reset_threshold=0, centroid_sharing=1, verbose = 0):
         # Save the setting passed in by __init__
         self.reset_threshold = reset_threshold
         self.centroid_sharing = centroid_sharing
+        self.verbose = verbose
         
         # Create the empty list of saved centroids
         self.saved_centroids = []
@@ -67,7 +68,8 @@ class randomVoronoiCells:
         for i in range(iteration_number):
             self.move_centroids()
             self.assign_points()
-            print i, self.calculate_current_AUC()
+            if self.verbose == 1:
+                print i, self.calculate_current_AUC()
             
         self.record_centroids()
                                 
@@ -114,8 +116,6 @@ class randomVoronoiCells:
             if sum(self.ratios[i]) > 0:
                 self.ratios[i] = self.ratios[i]/sum(self.ratios[i])
 
-        ### Need to put in random seeds for abandoned centroids!
-
     def move_centroids(self):
         self.centroids = self.assignments.dot(self.data)
         normalizer = [1/self.centroid_populations[i] for i in range(self.centroids.shape[0])]
@@ -124,7 +124,6 @@ class randomVoronoiCells:
         for i in range(self.centroids.shape[0]):
             if self.centroid_populations[i] <= self.reset_threshold:
                 self.centroids[i,:] = self.data[self.random_seed(self.seed_labels[i]),:]
-
 
     def record_centroids(self):
         self.saved_centroids.append(self.centroids)
