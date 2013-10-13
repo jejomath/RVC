@@ -1,5 +1,6 @@
 import scipy, random
 import sklearn.metrics as metrics
+from operator import itemgetter
 
 class randomVoronoiCells:
     
@@ -88,18 +89,25 @@ class randomVoronoiCells:
         cnorms = scipy.zeros(self.centroids.shape[0])
         for i in range(self.centroids.shape[0]):
             cnorms[i] = self.centroids[i,:].dot(self.centroids[i,:].transpose())
-            
+
         self.cnorms = cnorms
         # Assign points to the centroids
         for i in range(self.data.shape[0]):
-            dlist = self.centroids.dot(self.data[i])
-            dlist = cnorms - 2*dlist
-            dlist = list(dlist)
-            j = dlist.index(min(dlist))
-            self.assignments[j,i] = self.centroid_weights[j][self.label_index.index(self.labels[i])]
-            self.centroid_populations[j] += self.centroid_weights[j][self.label_index.index(self.labels[i])]
-            self.ratios[j, self.label_index.index(self.labels[i])] += 1
+            # Calculate the list of distances from point i to each centroid
+            dlist = list(cnorms - 2*self.centroids.dot(self.data[i]))
+            dlist = [[dlist[k],k] for k in range(len(dlist))]
+            dlist.sort(key=itemgetter(0)) # Sorted list of pairs [distance, index]
+            
+            # Record the first closest centroid for each point and the population
+            # ratios of the centroids for only the first closest.
+            j = dlist[0][1]
             self.point_assignments[i] = j
+            self.ratios[j, self.label_index.index(self.labels[i])] += 1
+            # For the move step, record the n-closest centroids, where n
+            # is self.centroid_sharing
+            for j in [dlist[k][1] for k in range(self.centroid_sharing)]:
+                self.assignments[j,i] = self.centroid_weights[j][self.label_index.index(self.labels[i])]
+                self.centroid_populations[j] += self.centroid_weights[j][self.label_index.index(self.labels[i])]
 
         # Convert self.ratios from a count to a set of percentages
         for i in range(self.ratios.shape[0]):
