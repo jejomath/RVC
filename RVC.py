@@ -130,5 +130,28 @@ class randomVoronoiCells:
         auc = metrics.auc(fpr,tpr)
         return auc
 
-#    def predict(self, data):
+    def predict(self, data):
+        cnorms = []
+        for c in self.saved_centroids:
+            cn = scipy.zeros(c.shape[0])
+            for j in range(c.shape[0]):
+                cn[j] = c[j,:].dot(c[j,:].transpose())
+            cnorms.append(cn)
+
+        pred = []
+        for i in range(data.shape[0]):
+            c = 0
+            for j in range(len(self.saved_centroids)):
+                dlist = self.saved_centroids[j].dot(self.data[i])
+                dlist = cnorms[j] - 2*dlist
+                dlist = list(dlist)
+                k = dlist.index(min(dlist))
+                c += self.saved_centroid_ratios[j][k][1]
+            pred.append(c / len(self.saved_centroids))
+            
+        return pred
+            
+            
+
+
         
