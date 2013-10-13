@@ -150,7 +150,7 @@ class randomVoronoiCells:
         for i in range(data.shape[0]):
             c = 0
             for j in range(len(self.saved_centroids)):
-                dlist = self.saved_centroids[j].dot(self.data[i])
+                dlist = self.saved_centroids[j].dot(data[i])
                 dlist = cnorms[j] - 2*dlist
                 dlist = list(dlist)
                 k = dlist.index(min(dlist))
