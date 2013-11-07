@@ -61,4 +61,12 @@ hard cutoff on the number of steps, rather than a convergence
 check. The default number of steps is 3, but this can be
 changed with the "iteration" parameter in the "fit" function.
 
+A second option is centroid sharing, which allows each centroid
+to "see" data points that are closer to adjacent centroids. For the
+update step, each data point is assigned to the n closest centroids
+rather the just the single closest centroid, and the centroid is
+updated based on all these assigned points. For n=1, this is just
+the standard K-means-style update. You can change sharing by
+setting the centroid_sharing parameter to your desired n.  
+
 

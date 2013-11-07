@@ -4,7 +4,7 @@ import sklearn.linear_model as lm
 
 
 # Load the OQ file and convert to data and labels
-data = scipy.loadtxt("OQ.csv")
+data = scipy.loadtxt("oq.csv")
 labels = data[:,-1]
 data = data[:,:-1]
 
