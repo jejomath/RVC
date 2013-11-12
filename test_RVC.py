@@ -81,7 +81,8 @@ LR = lm.LogisticRegression()
 
 LR.fit(tdata, tlabels)
 
-pred = LR.predict(edata)
+pred = LR.predict_proba(edata)
+pred = [p[1] for p in pred]
 
 fpr, tpr, thresholds = metrics.roc_curve(elabels, pred, pos_label=1)
 auc = metrics.auc(fpr,tpr)
